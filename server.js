@@ -4,10 +4,12 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const connectDB = require('./config/db');
+const appError = require('./utils/appError.js');
+const globalErrorHandler = require('./controllers/error.controller.js');
 
-const port = process.env.PORT || 5000;
 const app = express();
 
+const port = process.env.PORT || 5000;
 // Use cookie-parser middleware
 app.use(cookieParser());
 
@@ -33,6 +35,12 @@ const userRoutes = require('./routes/user.route.js');
 
 app.use('/api/tasks', taskRoutes);
 app.use('/api/users', userRoutes);
+
+app.all('*', (req, res, next) => {
+  next(new appError(`Page not found ${req.originalUrl}`, 404));
+});
+
+app.use(globalErrorHandler);
 
 app.listen(port, () => {
   console.log('listening on port ' + port);

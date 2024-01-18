@@ -15,8 +15,11 @@ const subtaskSchema = new mongoose.Schema({
 const taskSchema = new mongoose.Schema({
   title: {
     type: String,
+    unique: [true, 'Task Should be Unique'],
     required: [true, 'Task title is required.'],
     trim: true,
+    maxLength: [50, 'Task max length is 50 Chars'],
+    minLength: [10, 'Task min length is 10 Chars'],
   },
   description: {
     type: String,
@@ -28,12 +31,18 @@ const taskSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['To Do', 'In Progress', 'Done'],
+    enum: {
+      values: ['To Do', 'In Progress', 'Done'],
+      messages: 'Set Status as To Do,In Progress or Done', 
+    },
     default: 'To Do',
   },
   priority: {
     type: String,
-    enum: ['Low', 'Medium', 'High'],
+    enum: {
+      values: ['Low', 'Medium', 'High'],
+      messages: 'Priority is High, Medium or Low',
+    },
     default: 'Medium',
   },
   createdBy: {
